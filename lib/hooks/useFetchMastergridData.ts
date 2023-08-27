@@ -2,7 +2,9 @@
 import { useState } from 'react';
 import type { IGridDataPayload, IGridResponse, IGridTitlePayload, IGridTitleResponse } from '../interfaces';
 
-export const useFetchMasterGridData = () => {
+
+
+export const useFetchMasterGridData = (gridSlug:string) => {
   
   const [masterGridData, setMasterGridData] = useState<IGridResponse>();
   const [titleData, setTitleData] = useState<IGridTitleResponse>();
@@ -11,19 +13,22 @@ export const useFetchMasterGridData = () => {
 //   const [token ,setToken] = useState(null);
 
   const userData = JSON.parse(localStorage.getItem('user')!);
-console.log({userData});
 
-    const fetchGridData = async (payload:IGridDataPayload,slug:string) => {
+    const fetchGridData = async (payload:IGridDataPayload) => {
+      console.log('yessss');
+      
       try {
         // Fetch data from the first API based on slug
-        const response1 = await fetch(`${process.env.API_URL || 'https://ificapi.apsissolutions.com/api/v1'}/${slug}`, {
+        const response1 = await fetch(`${'https://ificapi.apsissolutions.com/api/v1'}/master-grid/grid-data`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${userData.access_token}`
           },
-          body: JSON.stringify(payload),
+          body: JSON.stringify({...payload,slug:gridSlug}),
         });
+
+        
         if (!response1.ok) {
           throw new Error('Failed to fetch master grid data!');
         }
@@ -36,16 +41,16 @@ console.log({userData});
         setIsLoading(false);
       }
     };
-    const fetchTitleData = async (payload:IGridTitlePayload,slug:string) => {
+    const fetchTitleData = async (payload:IGridTitlePayload) => {
       try {
         // Fetch data from the first API based on slug
-        const response1 = await fetch(`${process.env.API_URL || 'https://ificapi.apsissolutions.com/api/v1'}/${slug}`, {
+        const response1 = await fetch(`${'https://ificapi.apsissolutions.com/api/v1'}/master-grid/grid-title`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${userData.access_token}`
           },
-          body: JSON.stringify(payload),
+          body: JSON.stringify({...payload,slug:gridSlug}),
         });
         if (!response1.ok) {
           throw new Error('Failed to fetch grid title data!');

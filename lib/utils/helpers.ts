@@ -220,7 +220,9 @@ export const apsisTabChange = (index: number): void => {
 };
 
 export const envProducer = (type: "public" | "api"): string => {
-    const url = process.env.NEXT_PUBLIC_API_URL as string;
+    const url = import.meta.env.VITE_API_URL as string || 'https://ificapi.apsissolutions.com/api/v1';
+  
+    
 
     if (type === "public") {
         return url.replace("api/v1", "");

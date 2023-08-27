@@ -13,23 +13,30 @@ import MastergridFilter from "./MastergridFilter";
 import MastergridSearchPanel from "./MastergridSearchPanel";
 import MastergridTable from "./MastergridTable";
 import MastergridTitle from "./MastergridTitle";
-
 import { generateTitleData, gridDatGeneration } from "../utils";
 import { MastergridColumnRender } from "./MastergridColumnRender";
-import type { IGridConfigOptions, ISearchData } from "../interfaces/mastergrid";
+import type { IGridConfigOptions, IGridDataPayload, IGridResponse, IGridTitlePayload, IGridTitleResponse, ISearchData } from "../interfaces/mastergrid";
 
 interface GridProps extends Partial<IGridConfigOptions> {
-  slug: string;
   getAllValue?: any;
   is_selectable?: boolean;
   is_serial?: boolean;
+  gridData:IGridResponse | undefined;
+  titleData:IGridTitleResponse | undefined;
+  fetchGridData: (payload: IGridDataPayload) => Promise<void>;
+  fetchTitleData: (payload: IGridTitlePayload) => Promise<void>;
+  dataLoading:boolean;
 }
 
 export const Mastergrid: FC<GridProps> = ({
-  slug,
   title,
   is_selectable = false,
   getAllValue,
+  gridData,
+  titleData,
+  fetchGridData,
+  fetchTitleData,
+  dataLoading
 }) => {
   const [columns, setColumns] = useState<any[]>([]);
   const [isRawTable, setIsRawTable] = useState<boolean>(false);
@@ -39,14 +46,6 @@ export const Mastergrid: FC<GridProps> = ({
   const [gridConfig, setGridConfig] = useState<IGridConfigOptions>(gridConfigs);
   const [curInstanceIds, setCurInstanceIds] = useState<any[]>([]);
   const [gridDatas, setGridDatas] = useState<any[]>([]);
-
-  const {
-    fetchGridData,
-    fetchTitleData,
-    masterGridData: gridData,
-    isLoading: dataLoading,
-    titleData,
-  } = useFetchMasterGridData();
 
   const [searchText, setSearchText] = useState<string>("");
   const [searchData, setSearchData] = useState<Array<ISearchData>>([]);
@@ -97,7 +96,7 @@ export const Mastergrid: FC<GridProps> = ({
   const getMasterGridData = async () => {
     await fetchGridData(
       {
-        slug: slug,
+        
         extra: {
           extra_condition: extraCondition,
         },
@@ -106,31 +105,29 @@ export const Mastergrid: FC<GridProps> = ({
         per_page: gridConfig.perPage,
         search_data: searchData,
       },
-      "master-grid/grid-data"
     );
   };
 
   useEffect(() => {
-    if (slug) {
+    
       getMasterGridData();
-    }
-  }, [extraCondition, gridConfig, searchData, searchText, slug]);
+    
+  }, [extraCondition, gridConfig, searchData, searchText]);
 
   useEffect(() => {
-    if (slug) {
+   
       fetchTitleData(
         {
-          slug,
           extra: {
             extra_condition: extraCondition,
           },
           search_key: { search_text: searchText },
           search_data: searchData,
         },
-        "master-grid/grid-title"
+        
       );
-    }
-  }, [extraCondition, searchData, searchText, slug]);
+    
+  }, [extraCondition, searchData, searchText]);
 
   return (
     <MastergridStyle className="mg">

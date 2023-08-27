@@ -1,4 +1,4 @@
-import type { IGridConfigOptions, IGridResponseType, IGridTitleResponseType } from "../interfaces/mastergrid";
+import type { IGridConfigOptions, IGridResponse, IGridTitleResponse } from "../interfaces/mastergrid";
 
 import { columnShorter } from "./sorter";
 
@@ -24,7 +24,7 @@ export const gridDataWithKey = (
 };
 
 export const gridDatGeneration = (
-  gridData: IGridResponseType,
+  gridData: IGridResponse,
   gridConfig: any
 ) => {
   const { data, curInstanceIds } = gridDataWithKey(gridData.items, gridConfig);
@@ -32,7 +32,7 @@ export const gridDatGeneration = (
 };
 
 export const generateTitleData = (
-  titleData: IGridTitleResponseType,
+  titleData: IGridTitleResponse,
   title: any,
   is_selectable: any
 ) => {

@@ -1,11 +1,15 @@
 import { Spin, Table } from "antd";
-import type { TablePaginationConfig } from "antd";
+import type { TablePaginationConfig, TableProps } from "antd";
 import type { Dispatch, FC, SetStateAction } from "react";
 import { onlyUnique } from "../utils/mastergrid";
-import type { FilterValue, SorterResult } from "antd/es/table/interface";
+import type {
+  FilterValue,
+  RefTable,
+  SorterResult,
+} from "antd/es/table/interface";
 import type { IGridConfigOptions } from "../interfaces/mastergrid";
 
-type PropsType = {
+interface PropsType extends TableProps<RefTable> {
   loading: boolean;
   gridConfig: any;
   selectedIds: any[];
@@ -13,12 +17,11 @@ type PropsType = {
   curInstanceIds: any;
   disableIds: any[];
   isRawTable: boolean;
-  columns: any;
-  data: any;
+  data: any[];
   setSelectedIds: Dispatch<SetStateAction<any[]>>;
   setSelectedData: Dispatch<any>;
   setGridConfig: Dispatch<SetStateAction<IGridConfigOptions>>;
-};
+}
 
 const MastergridTable: FC<PropsType> = ({
   loading,
@@ -28,11 +31,12 @@ const MastergridTable: FC<PropsType> = ({
   curInstanceIds,
   disableIds,
   isRawTable,
-  columns,
   data,
+  columns,
   setSelectedIds,
   setSelectedData,
   setGridConfig,
+  ...rest
 }) => {
   const rowSelection = {
     getCheckboxProps: (record: any) => ({
@@ -110,7 +114,7 @@ const MastergridTable: FC<PropsType> = ({
                 total: gridConfig?.totalRows,
               }
         }
-        // {...rest}
+        {...rest}
         // footer={footer ? () => footer : null}
         scroll={{
           x: true,
